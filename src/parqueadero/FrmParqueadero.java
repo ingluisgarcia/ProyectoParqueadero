@@ -109,7 +109,7 @@ public class FrmParqueadero extends javax.swing.JFrame {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(rootPane, "Campo vacio");
+            JOptionPane.showMessageDialog(rootPane, "Campo vacio. Por favor, ingrese la placa.");
 
         }
 
