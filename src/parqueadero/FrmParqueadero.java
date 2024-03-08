@@ -2,6 +2,7 @@ package parqueadero;
 
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -18,11 +19,13 @@ public class FrmParqueadero extends javax.swing.JFrame {
      */
     ArrayList<Parqueadero> listaParqueadero;
     String placa;
+    String tiposVehiculos[]={"Carro", "Moto", "Bicicleta"};
 
     public FrmParqueadero() {
         initComponents();
         listaParqueadero = new ArrayList();
         txtPlaca.setText("");
+        llenarCombo();
     }
 
     /**
@@ -38,6 +41,10 @@ public class FrmParqueadero extends javax.swing.JFrame {
         txtPlaca = new javax.swing.JTextField();
         btnRegistrarIngreso = new javax.swing.JButton();
         btnIngresarSalida = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableRegistros = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        comboTipoVehiculo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,6 +60,28 @@ public class FrmParqueadero extends javax.swing.JFrame {
         });
 
         btnIngresarSalida.setText("Registrar Salida");
+        btnIngresarSalida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarSalidaActionPerformed(evt);
+            }
+        });
+
+        tableRegistros.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tableRegistros);
+
+        jLabel2.setText("Seleccione tipo de vehiculo");
+
+        comboTipoVehiculo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -60,26 +89,39 @@ public class FrmParqueadero extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtPlaca))
-                .addGap(18, 18, 18)
-                .addComponent(btnRegistrarIngreso)
-                .addGap(18, 18, 18)
-                .addComponent(btnIngresarSalida)
-                .addContainerGap(202, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtPlaca))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(comboTipoVehiculo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRegistrarIngreso)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnIngresarSalida)
+                        .addGap(0, 46, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegistrarIngreso)
-                    .addComponent(btnIngresarSalida))
-                .addContainerGap(359, Short.MAX_VALUE))
+                    .addComponent(btnIngresarSalida)
+                    .addComponent(comboTipoVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
 
         pack();
@@ -87,11 +129,13 @@ public class FrmParqueadero extends javax.swing.JFrame {
 
     private void btnRegistrarIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarIngresoActionPerformed
         // TODO add your handling code here:
-        if (!txtPlaca.getText().isEmpty()) {
+        if (!txtPlaca.getText().isEmpty() && comboTipoVehiculo.getSelectedIndex()>0) {
             placa = txtPlaca.getText().toUpperCase();
             if (listaParqueadero.isEmpty()) {
-                listaParqueadero.add(new Parqueadero(placa));
+                listaParqueadero.add(new Parqueadero(placa, 
+                        tiposVehiculos[comboTipoVehiculo.getSelectedIndex()-1]));
                 JOptionPane.showMessageDialog(rootPane, "Ingreso realizado");
+                mostrarInfo();
             } else {
                 int pos = -1;
                 for (int i = 0; i < listaParqueadero.size(); i++) {
@@ -101,20 +145,67 @@ public class FrmParqueadero extends javax.swing.JFrame {
                     }
                 }
                 if (pos == -1) {
-                    listaParqueadero.add(new Parqueadero(placa));
+                    listaParqueadero.add(new Parqueadero(placa,
+                        tiposVehiculos[comboTipoVehiculo.getSelectedIndex()-1]));
                     JOptionPane.showMessageDialog(rootPane, "Ingreso realizado");
+                    mostrarInfo();
                 } else {
                     JOptionPane.showMessageDialog(rootPane, "El vehiculo ya se encuentra dentro del parqueadero");
 
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(rootPane, "Campo vacio. Por favor, ingrese la placa.");
+            JOptionPane.showMessageDialog(rootPane, "Faltan campos por diligenciar");
 
         }
 
     }//GEN-LAST:event_btnRegistrarIngresoActionPerformed
 
+    private void btnIngresarSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarSalidaActionPerformed
+        // TODO add your handling code here:
+        if (!txtPlaca.getText().isEmpty()){
+            placa = txtPlaca.getText().toUpperCase();
+            int pos=-1;
+            for(int i=0;i<listaParqueadero.size();i++){
+                if(listaParqueadero.get(i).getPlaca().equals(placa)
+                        && listaParqueadero.get(i).validarSalida() == null){
+                    pos=i;
+                    break;
+                }
+            }
+            if(pos != -1){
+                listaParqueadero.get(pos).setHoraSalida();
+                JOptionPane.showMessageDialog(rootPane, "Salida registrada");
+                mostrarInfo();
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "Vehiculo no encontrado");
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Faltan campos por diligenciar");
+        }
+    }//GEN-LAST:event_btnIngresarSalidaActionPerformed
+
+    public void mostrarInfo(){
+        DefaultTableModel modelo = new DefaultTableModel();
+        String encabezado[]={"Placa","Tipo de Vehiculo", "Hora de entrada", "Hora de salida"};
+        modelo.setColumnIdentifiers(encabezado);
+        for(int i=0;i<listaParqueadero.size();i++){
+            modelo.addRow(new Object[]{listaParqueadero.get(i).getPlaca(),
+                listaParqueadero.get(i).getTipoVehiculo(),
+            listaParqueadero.get(i).getHoraEntrada(),
+            listaParqueadero.get(i).getHoraSalida()});
+        }
+        tableRegistros.setModel(modelo);
+    }
+    
+    public void llenarCombo(){
+        comboTipoVehiculo.removeAllItems();
+        comboTipoVehiculo.addItem("Seleccione...");
+        for (int i = 0; i < tiposVehiculos.length; i++) {
+            comboTipoVehiculo.addItem(tiposVehiculos[i]);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -153,7 +244,11 @@ public class FrmParqueadero extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresarSalida;
     private javax.swing.JButton btnRegistrarIngreso;
+    private javax.swing.JComboBox<String> comboTipoVehiculo;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableRegistros;
     private javax.swing.JTextField txtPlaca;
     // End of variables declaration//GEN-END:variables
 }

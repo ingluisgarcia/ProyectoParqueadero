@@ -7,11 +7,13 @@ import java.util.Calendar;
 public class Parqueadero {
     
     private String placa;
+    private String tipoVehiculo;
     private String horaEntrada;
     private String horaSalida;
     
-    public Parqueadero(String placa){
+    public Parqueadero(String placa, String tipoVehiculo){
         this.placa = placa;
+        this.tipoVehiculo = tipoVehiculo;
         horaEntrada= new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
                 .format(Calendar.getInstance().getTime());
         horaSalida = null;
@@ -19,6 +21,10 @@ public class Parqueadero {
     
     public String getPlaca(){
         return placa;
+    }
+    
+    public String getTipoVehiculo(){
+        return tipoVehiculo;
     }
     
     public String getHoraEntrada(){
@@ -32,6 +38,10 @@ public class Parqueadero {
             return "Dentro del Parqueadero";
         }
         
+    }
+    
+    public String validarSalida(){
+        return horaSalida;
     }
     
     public void setHoraSalida(){
